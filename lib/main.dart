@@ -1,4 +1,3 @@
-import 'package:finance_manager/Pages/getting_start.dart';
 import 'package:finance_manager/components/bottom_nav.dart';
 import 'package:flutter/material.dart';
 
@@ -16,7 +15,9 @@ class MyApp extends StatelessWidget {
       title: 'Flutter Demo',
       debugShowCheckedModeBanner: false,
       theme: ThemeData(fontFamily: 'Raleway', brightness: Brightness.dark),
-      home: GettingStart(),
+      home: BottomNav(
+        tab: 0,
+      ),
     );
   }
 }

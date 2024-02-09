@@ -43,6 +43,7 @@ class _BottomNavState extends State<BottomNav> {
           onTap: _onItemTapped,
           type: BottomNavigationBarType.fixed,
           backgroundColor: Colors.black,
+          selectedItemColor: Colors.deepPurpleAccent,
           showSelectedLabels: false,
           showUnselectedLabels: false,
           items: <BottomNavigationBarItem>[
