@@ -50,7 +50,7 @@ class _HomePageState extends State<HomePage> {
           floating: true,
           pinned: true,
           flexibleSpace: totalBalance(),
-          collapsedHeight: MediaQuery.of(context).size.height * 0.125,
+          collapsedHeight: MediaQuery.of(context).size.height * 0.1,
           expandedHeight: MediaQuery.of(context).size.height * 0.25,
         ),
         SliverPadding(
@@ -65,15 +65,22 @@ class _HomePageState extends State<HomePage> {
                       fontWeight: FontWeight.w300,
                       color: Colors.grey,
                     )),
-                GestureDetector(
-                  onTap: () {},
-                  child: Text('View All',
-                      style: TextStyle(
-                        fontSize: 15,
-                        fontWeight: FontWeight.w300,
-                        color: Colors.grey,
-                      )),
-                )
+                // GestureDetector(
+                //   onTap: () {
+                //     Navigator.push(
+                //         context,
+                //         MaterialPageRoute(
+                //             builder: (context) => BottomNav(
+                //                   tab: 1,
+                //                 )));
+                //   },
+                //   child: Text('View All',
+                //       style: TextStyle(
+                //         fontSize: 15,
+                //         fontWeight: FontWeight.w300,
+                //         color: Colors.grey,
+                //       )),
+                // )
               ],
             ),
           ),
