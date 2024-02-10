@@ -35,6 +35,7 @@ dependencies:
   curved_navigation_bar: ^1.0.1
   flutter_floating_bottom_bar: ^1.2.0
   fl_chart: ^0.66.1
+  sliver_tools: ^0.2.12
 
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.
@@ -71,6 +72,8 @@ flutter:
     - assets/images/exclude1.png
     - assets/images/vector.png
     - assets/images/google.png
+    - assets/images/Team 7_.jpeg
+    - assets/images/me.jpg
     
 
   # An image asset can refer to one or more resolution-specific "variants", see
