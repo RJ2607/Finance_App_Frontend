@@ -11,6 +11,7 @@ class AddExpenses extends StatefulWidget {
 
 class _AddExpensesState extends State<AddExpenses> {
   Icon category = Icon(Icons.food_bank);
+  TextEditingController dateController = TextEditingController();
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -58,20 +59,7 @@ class _AddExpensesState extends State<AddExpenses> {
                           fontWeight: FontWeight.w400,
                         ),
                       ),
-                      SizedBox(
-                        height: 20,
-                      ),
-                      TextField(
-                        decoration: InputDecoration(
-                          labelText: 'Title',
-                          labelStyle: TextStyle(
-                            color: Colors.grey,
-                          ),
-                          border: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(10),
-                          ),
-                        ),
-                      ),
+
                       SizedBox(
                         height: 20,
                       ),
@@ -90,6 +78,7 @@ class _AddExpensesState extends State<AddExpenses> {
                         height: 20,
                       ),
                       TextField(
+                        controller: dateController,
                         decoration: InputDecoration(
                           labelText: 'Date',
                           labelStyle: TextStyle(
@@ -99,6 +88,16 @@ class _AddExpensesState extends State<AddExpenses> {
                             borderRadius: BorderRadius.circular(10),
                           ),
                         ),
+                        onTap: () async {
+                          var date = await showDatePicker(
+                            context: context,
+                            initialDate: DateTime.now(),
+                            firstDate: DateTime(2000),
+                            lastDate: DateTime(2100),
+                          );
+                          dateController.text =
+                              date.toString().substring(0, 10);
+                        },
                       ),
                       SizedBox(
                         height: 20,
@@ -118,18 +117,25 @@ class _AddExpensesState extends State<AddExpenses> {
                           ),
                           dropdownMenuEntries: <DropdownMenuEntry<Icon>>[
                             DropdownMenuEntry(
-                                value: Icon(Icons.food_bank), label: 'Food'),
+                              value: Icon(Icons.food_bank),
+                              label: 'Food',
+                            ),
                             DropdownMenuEntry(
-                                value: Icon(Icons.shopping_bag),
-                                label: 'Shopping'),
+                              value: Icon(Icons.shopping_bag),
+                              label: 'Shopping',
+                            ),
                             DropdownMenuEntry(
-                                value: Icon(Icons.emoji_transportation),
-                                label: 'Transportation'),
+                              value: Icon(Icons.emoji_transportation),
+                              label: 'Transportation',
+                            ),
                             DropdownMenuEntry(
-                                value: Icon(Icons.car_rental), label: 'Car'),
+                              value: Icon(Icons.car_rental),
+                              label: 'Car',
+                            ),
                             DropdownMenuEntry(
-                                value: Icon(Icons.medical_services),
-                                label: 'Medical'),
+                              value: Icon(Icons.medical_services),
+                              label: 'Medical',
+                            ),
                           ]),
                       SizedBox(
                         height: 20,
