@@ -27,7 +27,7 @@ class _HomePageState extends State<HomePage> {
       appBar: PreferredSize(
           preferredSize: Size.fromHeight(double.maxFinite),
           child: Padding(
-            padding: EdgeInsets.fromLTRB(5, 20, 5, 10),
+            padding: EdgeInsets.fromLTRB(10, 25, 10, 10),
             child: topBar(context),
           )),
       body: Padding(
