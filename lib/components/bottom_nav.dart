@@ -50,12 +50,10 @@ class _BottomNavState extends State<BottomNav> {
             BottomNavigationBarItem(
               icon: Icon(CupertinoIcons.home),
               label: 'Home',
-              backgroundColor: Colors.blue,
             ),
             BottomNavigationBarItem(
               icon: Icon(CupertinoIcons.graph_circle),
               label: 'Transaction',
-              backgroundColor: Colors.green,
             ),
           ],
         ),
