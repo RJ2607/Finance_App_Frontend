@@ -1,8 +1,11 @@
 // ignore_for_file: prefer_const_constructors
 
+import 'dart:io';
 import 'dart:ui';
 
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:image_picker/image_picker.dart';
 
 class Profile extends StatefulWidget {
   const Profile({super.key});
@@ -12,6 +15,53 @@ class Profile extends StatefulWidget {
 }
 
 class _ProfileState extends State<Profile> {
+  late File _image;
+  final imagePicker = ImagePicker();
+
+  Future popUp() async {
+    // options for image picker by gallery or camera
+    return await showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text('Choose an option'),
+          content: SingleChildScrollView(
+            child: ListBody(
+              children: [
+                GestureDetector(
+                  child: Text('Gallery'),
+                  onTap: () {
+                    Navigator.pop(context, ImageSource.gallery);
+                  },
+                ),
+                Padding(padding: EdgeInsets.all(8.0)),
+                GestureDetector(
+                  child: Text('Camera'),
+                  onTap: () {
+                    Navigator.pop(context, ImageSource.camera);
+                  },
+                ),
+              ],
+            ),
+          ),
+        );
+      },
+    );
+  }
+
+  Future getImage(value) async {
+    final pickedFile = await imagePicker.pickImage(source: value);
+
+    // options for image picker by gallery or camera
+    setState(() {
+      if (pickedFile != null) {
+        _image = File(pickedFile.path);
+      } else {
+        print('No image selected.');
+      }
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -25,7 +75,24 @@ class _ProfileState extends State<Profile> {
             SizedBox(
               height: 20,
             ),
-            profileImage()
+            profileImage(),
+            SizedBox(
+              height: 5,
+            ),
+            Text(
+              'John Doe',
+              style: TextStyle(
+                fontSize: 25,
+                fontWeight: FontWeight.w500,
+              ),
+            ),
+            Text(
+              'xyz123@gmail.com',
+              style: TextStyle(
+                fontSize: 14,
+                fontWeight: FontWeight.w300,
+              ),
+            ),
           ],
         ),
       ),
@@ -67,38 +134,43 @@ class _ProfileState extends State<Profile> {
     return Stack(
       alignment: Alignment.center,
       children: [
-        Container(
-          height: 180,
-          width: 180,
-          decoration: BoxDecoration(
-            // image: DecorationImage(
-            //   image: AssetImage('assets/images/me.jpg'),
-            //   fit: BoxFit.cover,
-            // ),
-            boxShadow: [
-              BoxShadow(
-                color: Colors.black.withOpacity(0.3),
-                spreadRadius: -5,
-                blurRadius: 25,
+        TweenAnimationBuilder(
+          tween: Tween<double>(begin: 1.4, end: 2),
+          duration: Duration(seconds: 1),
+          builder: (BuildContext context, double value, Widget? child) {
+            return Container(
+              height: 180,
+              width: 180,
+              decoration: BoxDecoration(
+                // image: DecorationImage(
+                //   image: AssetImage('assets/images/me.jpg'),
+                //   fit: BoxFit.cover,
+                // ),
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.black.withOpacity(0.3),
+                    spreadRadius: -5,
+                    blurRadius: 25,
+                  ),
+                ],
+                shape: BoxShape.circle,
+                color: const Color.fromARGB(255, 0, 0, 0),
               ),
-            ],
-            shape: BoxShape.circle,
-            color: const Color.fromARGB(255, 0, 0, 0),
-          ),
-          child: ClipOval(
-            child: BackdropFilter(
-              filter: ImageFilter.blur(sigmaX: 15, sigmaY: 15),
-              child: Container(
-                decoration: BoxDecoration(
-                  gradient: LinearGradient(
-                      begin: Alignment.topLeft,
-                      end: Alignment.bottomRight,
-                      colors: [Colors.white30, Colors.white10]),
-                  shape: BoxShape.circle,
+              child: ClipOval(
+                child: BackdropFilter(
+                  filter: ImageFilter.blur(sigmaX: 15, sigmaY: 15),
+                  child: Container(
+                    decoration: BoxDecoration(
+                      gradient: LinearGradient(
+                          transform: GradientRotation((value) * 3.14),
+                          colors: [Colors.white30, Colors.white10]),
+                      shape: BoxShape.circle,
+                    ),
+                  ),
                 ),
               ),
-            ),
-          ),
+            );
+          },
         ),
         Container(
           decoration: BoxDecoration(
@@ -130,11 +202,11 @@ class _ProfileState extends State<Profile> {
                   shape: BoxShape.circle,
                 ),
                 child: Icon(
-                  Icons.edit,
+                  CupertinoIcons.pencil,
                   color: const Color.fromARGB(255, 255, 255, 255),
                 ),
               ),
-            ))
+            )),
       ],
     );
   }
