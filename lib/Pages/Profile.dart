@@ -3,6 +3,7 @@
 import 'dart:io';
 import 'dart:ui';
 
+import 'package:finance_manager/Pages/Settings.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
@@ -73,7 +74,7 @@ class _ProfileState extends State<Profile> {
           children: [
             topBar(context),
             SizedBox(
-              height: 20,
+              height: 10,
             ),
             profileImage(),
             SizedBox(
@@ -93,9 +94,126 @@ class _ProfileState extends State<Profile> {
                 fontWeight: FontWeight.w300,
               ),
             ),
+            SizedBox(
+              height: 15,
+            ),
+            Container(
+              padding: EdgeInsets.fromLTRB(40, 10, 40, 10),
+              decoration: BoxDecoration(
+                color: Colors.black.withOpacity(1),
+                borderRadius: BorderRadius.circular(30),
+              ),
+              child: Text(
+                'Edit Profile',
+                style: TextStyle(
+                  fontSize: 18,
+                  fontWeight: FontWeight.w400,
+                ),
+              ),
+            ),
+            SizedBox(
+              height: 25,
+            ),
+            Padding(
+              padding: const EdgeInsets.only(left: 18, right: 18),
+              child: Column(
+                children: [
+                  SizedBox(
+                    height: 5,
+                  ),
+                  Divider(
+                    color: Colors.white.withOpacity(0.3),
+                  ),
+                  SizedBox(
+                    height: 5,
+                  ),
+                  profileOptions(context, 'Settings', CupertinoIcons.settings,
+                      true, MySettings(), Colors.white),
+                  profileOptions(context, 'Contact Us', CupertinoIcons.phone,
+                      true, MySettings(), Colors.white),
+                  profileOptions(context, 'Logout', Icons.logout, false,
+                      MySettings(), Colors.red),
+                ],
+              ),
+            ),
           ],
         ),
       ),
+    );
+  }
+
+  Row profileOptions(BuildContext context, String title, IconData icon,
+      bool arrow, Widget page, Color textColor) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: [
+        GestureDetector(
+          onTap: () {
+            if (title == 'Logout') {
+              Navigator.pop(context);
+            } else {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => page),
+              );
+            }
+          },
+          child: Row(
+            children: [
+              Container(
+                padding: EdgeInsets.all(10),
+                decoration: BoxDecoration(
+                  shape: BoxShape.circle,
+                  color: Colors.white.withOpacity(0.3),
+                ),
+                child: Icon(
+                  icon,
+                  size: 20,
+                ),
+              ),
+              SizedBox(
+                width: 10,
+              ),
+              Text(title,
+                  style: TextStyle(
+                    color: textColor,
+                    fontSize: 18,
+                    fontWeight: FontWeight.w400,
+                  )),
+            ],
+          ),
+        ),
+        arrow
+            ? Container(
+                padding: EdgeInsets.all(13),
+                decoration: BoxDecoration(
+                  shape: BoxShape.circle,
+                  color: Colors.white.withOpacity(0.3),
+                ),
+                child: Text(
+                  '>',
+                  style: TextStyle(
+                    fontSize: 20,
+                    fontWeight: FontWeight.w400,
+                    color: Colors.white,
+                  ),
+                ),
+              )
+            : Container(
+                padding: EdgeInsets.all(13),
+                decoration: BoxDecoration(
+                  shape: BoxShape.circle,
+                  color: Colors.transparent,
+                ),
+                child: Text(
+                  '',
+                  style: TextStyle(
+                    fontSize: 20,
+                    fontWeight: FontWeight.w400,
+                  ),
+                ),
+              )
+      ],
     );
   }
 
