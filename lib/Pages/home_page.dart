@@ -1,6 +1,7 @@
 // ignore_for_file: prefer_const_constructors, prefer_const_literals_to_create_immutables, non_constant_identifier_names
 
-import 'package:finance_manager/Pages/Profile.dart';
+import 'package:finance_manager/Pages/settings/Profile.dart';
+import 'package:finance_manager/Pages/settings/Settings.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
@@ -450,7 +451,13 @@ class _HomePageState extends State<HomePage> {
           ),
         ),
         IconButton(
-          onPressed: () {},
+          onPressed: () {
+            Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => MySettings(),
+                ));
+          },
           icon: Icon(
             CupertinoIcons.gear,
             size: 25,
