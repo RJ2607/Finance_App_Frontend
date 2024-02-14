@@ -43,6 +43,7 @@ class _HomePageState extends State<HomePage> {
       controller: _controller,
       slivers: [
         SliverAppBar(
+          automaticallyImplyLeading: false,
           // bottom: PreferredSize(
           // preferredSize: Size.fromHeight(100),
           // child: Container(

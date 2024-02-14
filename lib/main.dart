@@ -1,4 +1,5 @@
 import 'package:finance_manager/Pages/getting_start.dart';
+import 'package:finance_manager/Pages/home_page.dart';
 import 'package:flutter/material.dart';
 
 void main() {
@@ -24,7 +25,7 @@ class _MyAppState extends State<MyApp> {
       initialRoute: login ? '/home' : '/gettingStart',
       routes: {
         '/gettingStart': (context) => const GettingStart(),
-        '/home': (context) => const MyApp(),
+        '/home': (context) => const HomePage(),
       },
     );
   }

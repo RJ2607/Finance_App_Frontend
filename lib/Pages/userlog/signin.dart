@@ -1,7 +1,6 @@
 // ignore_for_file: prefer_const_constructors, sort_child_properties_last
 
 import 'package:finance_manager/Pages/userlog/signup.dart';
-import 'package:finance_manager/components/bottom_nav.dart';
 import 'package:flutter/material.dart';
 
 class signIn extends StatefulWidget {
@@ -121,8 +120,7 @@ class _signInState extends State<signIn> {
               ),
               TextButton(
                 onPressed: () {
-                  Navigator.push(context,
-                      MaterialPageRoute(builder: ((context) => BottomNav())));
+                  Navigator.pushNamed(context, '/home');
                 },
                 child: Text(
                   'Sign In',
