@@ -35,7 +35,7 @@ dependencies:
   curved_navigation_bar: ^1.0.1
   flutter_floating_bottom_bar: ^1.2.0
   fl_chart: ^0.66.1
-
+  rive: ^0.7.0
   image_picker: ^1.0.7
 
   # The following adds the Cupertino Icons font to your application.
@@ -75,6 +75,8 @@ flutter:
     - assets/images/google.png
     - assets/images/Team 7_.jpeg
     - assets/images/me.jpg
+    - assets/Backgrounds/Spline.png
+    - assets/RiveAssets/shapes.riv
     
 
   # An image asset can refer to one or more resolution-specific "variants", see

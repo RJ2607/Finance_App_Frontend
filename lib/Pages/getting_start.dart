@@ -5,6 +5,7 @@ import 'dart:ui';
 import 'package:finance_manager/Pages/userlog/signin.dart';
 import 'package:finance_manager/Pages/userlog/signup_option.dart';
 import 'package:flutter/material.dart';
+import 'package:rive/rive.dart';
 
 class GettingStart extends StatefulWidget {
   const GettingStart({super.key});
@@ -26,50 +27,27 @@ class _GettingStartState extends State<GettingStart> {
           height: MediaQuery.of(context).size.height,
           child: Stack(
             children: [
-              Align(
-                alignment: const AlignmentDirectional(1.5, -0.2),
-                child: Container(
-                  height: 160,
-                  width: 200,
-                  decoration: const BoxDecoration(
-                      color: Color.fromARGB(255, 248, 39, 39),
-                      shape: BoxShape.circle),
+              Positioned(
+                width: MediaQuery.of(context).size.width * 1.7,
+                left: 100,
+                top: 50,
+                child: Image.asset(
+                  "assets/Backgrounds/Spline.png",
                 ),
               ),
-              Align(
-                alignment: const Alignment(1.8, 0.1),
-                child: Container(
-                  height: 100,
-                  width: 200,
-                  decoration: const BoxDecoration(
-                      color: Color.fromARGB(255, 109, 23, 221),
-                      shape: BoxShape.circle),
+              Positioned.fill(
+                child: BackdropFilter(
+                  filter: ImageFilter.blur(sigmaX: 20, sigmaY: 20),
+                  child: const SizedBox(),
                 ),
               ),
-              Align(
-                alignment: const AlignmentDirectional(-1.6, 1.1),
-                child: Container(
-                  height: 160,
-                  width: 200,
-                  decoration: const BoxDecoration(
-                      color: Color.fromARGB(255, 157, 41, 41),
-                      shape: BoxShape.circle),
-                ),
+              const RiveAnimation.asset(
+                'assets/RiveAssets/shapes.riv',
               ),
-              Align(
-                alignment: const Alignment(-2, -1.4),
-                child: Container(
-                  height: 200,
-                  width: 200,
-                  decoration: const BoxDecoration(
-                      color: Color.fromARGB(255, 86, 19, 174),
-                      shape: BoxShape.circle),
-                ),
-              ),
-              BackdropFilter(
-                filter: ImageFilter.blur(sigmaX: 90, sigmaY: 90),
-                child: Container(
-                  decoration: const BoxDecoration(color: Colors.transparent),
+              Positioned.fill(
+                child: BackdropFilter(
+                  filter: ImageFilter.blur(sigmaX: 30, sigmaY: 30),
+                  child: const SizedBox(),
                 ),
               ),
               frontDisplay(),
