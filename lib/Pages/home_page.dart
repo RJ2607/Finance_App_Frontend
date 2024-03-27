@@ -14,16 +14,27 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   final ScrollController _controller = ScrollController();
+
   double _scrollPosition = 0;
   double appBarHeight = 200;
   @override
-  Widget build(BuildContext context) {
+  void initState() {
+    super.initState();
     _controller.addListener(() {
       setState(() {
         _scrollPosition = _controller.position.pixels;
       });
     });
+  }
 
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
     return Scaffold(
       appBar: PreferredSize(
           preferredSize: Size.fromHeight(double.maxFinite),
