@@ -1,6 +1,10 @@
 // ignore_for_file: prefer_const_constructors
 
+import 'dart:developer';
+
 import 'package:finance_manager/Pages/userlog/signin.dart';
+import 'package:finance_manager/widgets/input_fields.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
 class signUp extends StatefulWidget {
@@ -11,7 +15,27 @@ class signUp extends StatefulWidget {
 }
 
 class _signUpState extends State<signUp> {
-  bool visible = true;
+  bool visiblep = true;
+  bool visiblecp = true;
+  TextEditingController emailController = TextEditingController();
+  TextEditingController passwordController = TextEditingController();
+  TextEditingController confirmPasswordController = TextEditingController();
+
+  void createAccount() async {
+    String email = emailController.text.trim();
+    String password = passwordController.text.trim();
+    String confirmPassword = confirmPasswordController.text.trim();
+    if (email == "" || password == "") {
+      log("Please filled the details");
+    } else if (password != confirmPassword) {
+      log('Password does not match');
+    } else {
+      UserCredential userCredential = await FirebaseAuth.instance
+          .createUserWithEmailAndPassword(email: email, password: password);
+      log("user created");
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -37,19 +61,7 @@ class _signUpState extends State<signUp> {
               SizedBox(
                 height: 5,
               ),
-              SizedBox(
-                height: 50,
-                width: 340,
-                child: TextField(
-                  style: TextStyle(),
-                  decoration: InputDecoration(
-                    contentPadding: EdgeInsets.symmetric(horizontal: 20),
-                    border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(15)),
-                    labelText: 'E-mail address',
-                  ),
-                ),
-              ),
+              InputTextFieldWidget(emailController, 'E-mail address'),
               SizedBox(
                 height: 15,
               ),
@@ -59,33 +71,8 @@ class _signUpState extends State<signUp> {
               SizedBox(
                 height: 5,
               ),
-              SizedBox(
-                height: 50,
-                width: 340,
-                child: TextField(
-                  obscureText: visible,
-                  decoration: InputDecoration(
-                    contentPadding: EdgeInsets.symmetric(horizontal: 20),
-                    hintText: "Confirm Password",
-                    suffixIcon: IconButton(
-                      onPressed: () {
-                        setState(() {
-                          visible = !visible;
-                        });
-                      },
-                      icon: Icon(
-                          visible ? Icons.visibility : Icons.visibility_off),
-                    ),
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(15),
-                      borderSide: BorderSide(
-                        color: Color.fromRGBO(40, 65, 98, 1),
-                        width: 2,
-                      ),
-                    ),
-                  ),
-                ),
-              ),
+              InputTextFieldWidget(passwordController, 'Password',
+                  passwordField: true),
               SizedBox(
                 height: 15,
               ),
@@ -95,38 +82,16 @@ class _signUpState extends State<signUp> {
               SizedBox(
                 height: 5,
               ),
-              SizedBox(
-                height: 50,
-                width: 340,
-                child: TextField(
-                  obscureText: visible,
-                  decoration: InputDecoration(
-                    contentPadding: EdgeInsets.symmetric(horizontal: 20),
-                    hintText: "Confirm Password",
-                    suffixIcon: IconButton(
-                      onPressed: () {
-                        setState(() {
-                          visible = !visible;
-                        });
-                      },
-                      icon: Icon(
-                          visible ? Icons.visibility : Icons.visibility_off),
-                    ),
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(15),
-                      borderSide: BorderSide(
-                        color: Color.fromRGBO(40, 65, 98, 1),
-                        width: 2,
-                      ),
-                    ),
-                  ),
-                ),
-              ),
+              InputTextFieldWidget(
+                  confirmPasswordController, 'Confirm Password',
+                  passwordField: true),
               SizedBox(
                 height: 70,
               ),
               TextButton(
-                onPressed: () {},
+                onPressed: () {
+                  createAccount();
+                },
                 child: Text(
                   'Get started',
                   style: TextStyle(fontSize: 16, color: Colors.white),
