@@ -1,7 +1,8 @@
 // ignore_for_file: prefer_const_constructors, sort_child_properties_last
 
-import 'package:finance_manager/Pages/userlog/signup.dart';
 import 'package:flutter/material.dart';
+
+import 'signup_option.dart';
 
 class signIn extends StatefulWidget {
   const signIn({super.key});
@@ -143,7 +144,7 @@ class _signInState extends State<signIn> {
               TextButton(
                 onPressed: () {
                   Navigator.push(context,
-                      MaterialPageRoute(builder: (context) => signUp()));
+                      MaterialPageRoute(builder: (context) => signupOption()));
                 },
                 child: Text(
                   'Sign Up',
