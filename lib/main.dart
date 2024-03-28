@@ -1,5 +1,6 @@
 import 'package:finance_manager/Pages/getting_start.dart';
 import 'package:finance_manager/components/bottom_nav.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 
@@ -29,7 +30,9 @@ class _MyAppState extends State<MyApp> {
       title: 'Flutter Demo',
       debugShowCheckedModeBanner: false,
       theme: ThemeData(fontFamily: 'Raleway', brightness: Brightness.dark),
-      initialRoute: login ? '/home' : '/gettingStart',
+      initialRoute: (FirebaseAuth.instance.currentUser == null)
+          ? '/gettingStart'
+          : '/home',
       routes: {
         '/gettingStart': (context) => const GettingStart(),
         '/home': (context) => BottomNav(
