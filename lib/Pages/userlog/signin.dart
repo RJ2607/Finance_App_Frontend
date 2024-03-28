@@ -1,5 +1,9 @@
 // ignore_for_file: prefer_const_constructors, sort_child_properties_last
 
+import 'package:finance_manager/widgets/input_fields.dart';
+import 'package:finance_manager/widgets/showSnackBar.dart';
+import 'package:finance_manager/widgets/submit_button.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
 import 'signup_option.dart';
@@ -13,7 +17,41 @@ class signIn extends StatefulWidget {
 
 class _signInState extends State<signIn> {
   bool isCheck = false;
-  bool visible = true;
+  bool isloading = false;
+  TextEditingController emailEditingController = TextEditingController();
+  TextEditingController passwordEditingController = TextEditingController();
+
+  void login() async {
+    String email = emailEditingController.text.trim();
+    String password = passwordEditingController.text.trim();
+    if (email == "" || password == "") {
+      showSnackBar(context, 'Please fill all the fields');
+    } else {
+      try {
+        setState(() {
+          isloading = true;
+        });
+        UserCredential userCredential = await FirebaseAuth.instance
+            .signInWithEmailAndPassword(email: email, password: password);
+        if (userCredential.user != null) {
+          Navigator.popUntil(context, (route) => route.isFirst);
+          Navigator.pushReplacementNamed(
+            context,
+            '/home',
+          );
+        }
+      } on FirebaseAuthException catch (e) {
+        if (e.code == 'invalid-credential') {
+          showSnackBar(context, 'Invalid Credentials');
+        }
+      } finally {
+        setState(() {
+          isloading = false;
+        });
+      }
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -39,19 +77,7 @@ class _signInState extends State<signIn> {
               SizedBox(
                 height: 5,
               ),
-              SizedBox(
-                height: 50,
-                width: 340,
-                child: TextField(
-                  style: TextStyle(),
-                  decoration: InputDecoration(
-                    contentPadding: EdgeInsets.symmetric(horizontal: 20),
-                    border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(15)),
-                    labelText: 'E-mail address',
-                  ),
-                ),
-              ),
+              InputTextFieldWidget(emailEditingController, 'Email Address'),
               SizedBox(
                 height: 15,
               ),
@@ -61,79 +87,31 @@ class _signInState extends State<signIn> {
               SizedBox(
                 height: 5,
               ),
+              InputTextFieldWidget(passwordEditingController, 'Password',
+                  passwordField: true),
               SizedBox(
-                height: 50,
-                width: 340,
-                child: TextField(
-                  obscureText: visible,
-                  decoration: InputDecoration(
-                    contentPadding: EdgeInsets.symmetric(horizontal: 20),
-                    hintText: "Confirm Password",
-                    suffixIcon: IconButton(
-                      onPressed: () {
-                        setState(() {
-                          visible = !visible;
-                        });
-                      },
-                      icon: Icon(
-                          visible ? Icons.visibility : Icons.visibility_off),
-                    ),
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(15),
-                      borderSide: BorderSide(
-                        color: Color.fromRGBO(40, 65, 98, 1),
-                        width: 2,
+                height: 8,
+              ),
+              Align(
+                  alignment: AlignmentDirectional.centerEnd,
+                  child: GestureDetector(
+                    child: Text(
+                      'Forgot Password?',
+                      style: TextStyle(
+                        color: Colors.grey[400],
+                        fontSize: 16,
                       ),
                     ),
-                  ),
-                ),
-              ),
+                  )),
               SizedBox(
-                height: 4,
+                height: 8,
               ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Row(
-                    children: [
-                      Checkbox(
-                          side: BorderSide(width: 1, color: Colors.grey),
-                          value: isCheck,
-                          onChanged: (bool? value) {
-                            setState(() {
-                              isCheck = value!;
-                            });
-                          }),
-                      Text(
-                        "Remember me",
-                        style: TextStyle(color: Colors.grey, fontSize: 16),
-                      )
-                    ],
-                  ),
-                  Text(
-                    'Forgot Password?',
-                    style: TextStyle(color: Colors.grey, fontSize: 16),
-                  ),
-                ],
-              ),
-              SizedBox(
-                height: 4,
-              ),
-              TextButton(
-                onPressed: () {
-                  Navigator.pushNamed(context, '/home');
-                },
-                child: Text(
-                  'Sign In',
-                  style: TextStyle(fontSize: 16, color: Colors.white),
-                ),
-                style: TextButton.styleFrom(
-                    shadowColor: Colors.redAccent,
-                    elevation: 15,
-                    fixedSize: Size(340, 45),
-                    side: BorderSide(width: 1, color: Colors.redAccent),
-                    backgroundColor: Colors.redAccent),
-              ),
+              SubmitButton(
+                  onPressed: login,
+                  title: 'Sign In',
+                  loading: isloading,
+                  color: Colors.redAccent,
+                  textsize: 20),
               SizedBox(
                 height: 160,
               ),
