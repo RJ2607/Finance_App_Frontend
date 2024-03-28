@@ -1,5 +1,6 @@
 // ignore_for_file: prefer_const_constructors
 
+import 'dart:developer';
 import 'dart:ui';
 
 import 'package:finance_manager/Pages/settings/Settings.dart';
@@ -16,8 +17,21 @@ class Profile extends StatefulWidget {
 }
 
 class _ProfileState extends State<Profile> {
+  bool isloading = false;
+
   void logout() async {
-    await FirebaseAuth.instance.signOut();
+    try {
+      setState(() {
+        isloading = true;
+      });
+      await FirebaseAuth.instance.signOut();
+    } on FirebaseAuthException catch (e) {
+      log(e.code.toString());
+    } finally {
+      setState(() {
+        isloading = false;
+      });
+    }
   }
 
   @override
@@ -25,81 +39,108 @@ class _ProfileState extends State<Profile> {
     return Scaffold(
       body: Padding(
         padding: EdgeInsets.fromLTRB(15, 30, 15, 0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            topBar(context),
-            SizedBox(
-              height: 10,
-            ),
-            profileImage(),
-            SizedBox(
-              height: 5,
-            ),
-            Text(
-              'John Doe',
-              style: TextStyle(
-                fontSize: 25,
-                fontWeight: FontWeight.w500,
+        child: Stack(children: [
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              topBar(context),
+              SizedBox(
+                height: 10,
               ),
-            ),
-            Text(
-              'xyz123@gmail.com',
-              style: TextStyle(
-                fontSize: 14,
-                fontWeight: FontWeight.w300,
+              profileImage(),
+              SizedBox(
+                height: 5,
               ),
-            ),
-            SizedBox(
-              height: 15,
-            ),
-            GestureDetector(
-              onTap: () {
-                Navigator.push(context,
-                    MaterialPageRoute(builder: (context) => EditPage()));
-              },
-              child: Container(
-                padding: EdgeInsets.fromLTRB(40, 10, 40, 10),
-                decoration: BoxDecoration(
-                  color: Colors.black.withOpacity(1),
-                  borderRadius: BorderRadius.circular(30),
-                ),
-                child: Text(
-                  'Edit Profile',
-                  style: TextStyle(
-                    fontSize: 18,
-                    fontWeight: FontWeight.w400,
-                  ),
+              Text(
+                'John Doe',
+                style: TextStyle(
+                  fontSize: 25,
+                  fontWeight: FontWeight.w500,
                 ),
               ),
-            ),
-            SizedBox(
-              height: 25,
-            ),
-            Padding(
-              padding: const EdgeInsets.only(left: 18, right: 18),
-              child: Column(
-                children: [
-                  SizedBox(
-                    height: 5,
-                  ),
-                  Divider(
-                    color: Colors.white.withOpacity(0.3),
-                  ),
-                  SizedBox(
-                    height: 5,
-                  ),
-                  profileOptions(context, 'Settings', CupertinoIcons.settings,
-                      true, MySettings(), Colors.white),
-                  profileOptions(context, 'Contact Us', CupertinoIcons.phone,
-                      true, MySettings(), Colors.white),
-                  profileOptions(context, 'Logout', Icons.logout, false,
-                      MySettings(), Colors.red),
-                ],
+              Text(
+                'xyz123@gmail.com',
+                style: TextStyle(
+                  fontSize: 14,
+                  fontWeight: FontWeight.w300,
+                ),
               ),
+              SizedBox(
+                height: 15,
+              ),
+              GestureDetector(
+                onTap: () {
+                  Navigator.push(context,
+                      MaterialPageRoute(builder: (context) => EditPage()));
+                },
+                child: Container(
+                  padding: EdgeInsets.fromLTRB(40, 10, 40, 10),
+                  decoration: BoxDecoration(
+                    color: Colors.black.withOpacity(1),
+                    borderRadius: BorderRadius.circular(30),
+                  ),
+                  child: Text(
+                    'Edit Profile',
+                    style: TextStyle(
+                      fontSize: 18,
+                      fontWeight: FontWeight.w400,
+                    ),
+                  ),
+                ),
+              ),
+              SizedBox(
+                height: 25,
+              ),
+              Padding(
+                padding: const EdgeInsets.only(left: 18, right: 18),
+                child: Column(
+                  children: [
+                    SizedBox(
+                      height: 5,
+                    ),
+                    Divider(
+                      color: Colors.white.withOpacity(0.3),
+                    ),
+                    SizedBox(
+                      height: 5,
+                    ),
+                    profileOptions(context, 'Settings', CupertinoIcons.settings,
+                        true, MySettings(), Colors.white),
+                    profileOptions(context, 'Contact Us', CupertinoIcons.phone,
+                        true, MySettings(), Colors.white),
+                    profileOptions(context, 'Logout', Icons.logout, false,
+                        MySettings(), Colors.red),
+                  ],
+                ),
+              ),
+            ],
+          ),
+          if (isloading) logoutLoading(),
+        ]),
+      ),
+    );
+  }
+
+  Container logoutLoading() {
+    return Container(
+      alignment: Alignment.center,
+      color: Colors.black.withOpacity(0.5),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.center,
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          CircularProgressIndicator(
+            color: Colors.white,
+            strokeCap: StrokeCap.round,
+          ),
+          Text(
+            'Logging out...',
+            style: TextStyle(
+              color: Colors.white,
+              fontSize: 20,
             ),
-          ],
-        ),
+          )
+        ],
       ),
     );
   }
