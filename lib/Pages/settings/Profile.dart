@@ -4,6 +4,7 @@ import 'dart:ui';
 
 import 'package:finance_manager/Pages/settings/Settings.dart';
 import 'package:finance_manager/Pages/settings/edit_profile.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
@@ -15,6 +16,10 @@ class Profile extends StatefulWidget {
 }
 
 class _ProfileState extends State<Profile> {
+  void logout() async {
+    await FirebaseAuth.instance.signOut();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -107,7 +112,9 @@ class _ProfileState extends State<Profile> {
         GestureDetector(
           onTap: () {
             if (title == 'Logout') {
-              Navigator.pop(context);
+              logout();
+              Navigator.popUntil(context, (route) => route.isFirst);
+              Navigator.pushReplacementNamed(context, '/gettingStart');
             } else {
               Navigator.push(
                 context,
