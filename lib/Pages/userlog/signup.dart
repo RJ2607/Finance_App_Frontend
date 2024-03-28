@@ -1,11 +1,12 @@
 // ignore_for_file: prefer_const_constructors
 
-import 'dart:developer';
-
 import 'package:finance_manager/Pages/userlog/signin.dart';
 import 'package:finance_manager/widgets/input_fields.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+
+import '../../widgets/showSnackBar.dart';
+import '../../widgets/submit_button.dart';
 
 class signUp extends StatefulWidget {
   const signUp({super.key});
@@ -15,24 +16,41 @@ class signUp extends StatefulWidget {
 }
 
 class _signUpState extends State<signUp> {
-  bool visiblep = true;
-  bool visiblecp = true;
   TextEditingController emailController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
   TextEditingController confirmPasswordController = TextEditingController();
+  bool isloading = false;
 
   void createAccount() async {
     String email = emailController.text.trim();
     String password = passwordController.text.trim();
     String confirmPassword = confirmPasswordController.text.trim();
     if (email == "" || password == "") {
-      log("Please filled the details");
+      showSnackBar(context, 'Please fill all the fields');
     } else if (password != confirmPassword) {
-      log('Password does not match');
+      showSnackBar(context, 'Passwords do not match');
     } else {
-      UserCredential userCredential = await FirebaseAuth.instance
-          .createUserWithEmailAndPassword(email: email, password: password);
-      log("user created");
+      try {
+        setState(() {
+          isloading = true;
+        });
+        UserCredential userCredential = await FirebaseAuth.instance
+            .createUserWithEmailAndPassword(email: email, password: password);
+        if (userCredential.user != null) {
+          Navigator.push(
+              context, MaterialPageRoute(builder: (context) => signIn()));
+        }
+      } on FirebaseAuthException catch (e) {
+        if (e.code == 'weak-password') {
+          showSnackBar(context, 'The password provided is too weak.');
+        } else if (e.code == 'email-already-in-use') {
+          showSnackBar(context, 'The account already exists for that email.');
+        }
+      } finally {
+        setState(() {
+          isloading = false;
+        });
+      }
     }
   }
 
@@ -88,21 +106,12 @@ class _signUpState extends State<signUp> {
               SizedBox(
                 height: 70,
               ),
-              TextButton(
-                onPressed: () {
-                  createAccount();
-                },
-                child: Text(
-                  'Get started',
-                  style: TextStyle(fontSize: 16, color: Colors.white),
-                ),
-                style: TextButton.styleFrom(
-                    shadowColor: Colors.redAccent,
-                    elevation: 15,
-                    fixedSize: Size(340, 45),
-                    side: BorderSide(width: 1, color: Colors.redAccent),
-                    backgroundColor: Colors.redAccent),
-              ),
+              SubmitButton(
+                  onPressed: createAccount,
+                  title: 'Sign Up',
+                  loading: isloading,
+                  color: Colors.redAccent,
+                  textsize: 20),
               SizedBox(
                 height: 50,
               ),
