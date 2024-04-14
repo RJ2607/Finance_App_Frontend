@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:finance_manager/Pages/getting_start.dart';
 import 'package:finance_manager/components/bottom_nav.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -11,6 +12,8 @@ void main() async {
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
+  FirebaseFirestore firestore = FirebaseFirestore.instance;
+
   runApp(const MyApp());
 }
 
