@@ -19,6 +19,7 @@ class Profile extends StatefulWidget {
 class _ProfileState extends State<Profile> {
   bool isloading = false;
 
+  final user = FirebaseAuth.instance.currentUser;
   void logout() async {
     try {
       setState(() {
@@ -40,80 +41,93 @@ class _ProfileState extends State<Profile> {
       body: Padding(
         padding: EdgeInsets.fromLTRB(15, 30, 15, 0),
         child: Stack(children: [
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              topBar(context),
-              SizedBox(
-                height: 10,
-              ),
-              profileImage(),
-              SizedBox(
-                height: 5,
-              ),
-              Text(
-                'John Doe',
-                style: TextStyle(
-                  fontSize: 25,
-                  fontWeight: FontWeight.w500,
+          SingleChildScrollView(
+            scrollDirection: Axis.vertical,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                topBar(context),
+                SizedBox(
+                  height: 10,
                 ),
-              ),
-              Text(
-                'xyz123@gmail.com',
-                style: TextStyle(
-                  fontSize: 14,
-                  fontWeight: FontWeight.w300,
+                profileImage(user!.photoURL.toString()),
+                SizedBox(
+                  height: 5,
                 ),
-              ),
-              SizedBox(
-                height: 15,
-              ),
-              GestureDetector(
-                onTap: () {
-                  Navigator.push(context,
-                      MaterialPageRoute(builder: (context) => EditPage()));
-                },
-                child: Container(
-                  padding: EdgeInsets.fromLTRB(40, 10, 40, 10),
-                  decoration: BoxDecoration(
-                    color: Colors.black.withOpacity(1),
-                    borderRadius: BorderRadius.circular(30),
-                  ),
-                  child: Text(
-                    'Edit Profile',
-                    style: TextStyle(
-                      fontSize: 18,
-                      fontWeight: FontWeight.w400,
-                    ),
+                Text(
+                  user!.displayName.toString(),
+                  style: TextStyle(
+                    fontSize: 25,
+                    fontWeight: FontWeight.w500,
                   ),
                 ),
-              ),
-              SizedBox(
-                height: 25,
-              ),
-              Padding(
-                padding: const EdgeInsets.only(left: 18, right: 18),
-                child: Column(
-                  children: [
-                    SizedBox(
-                      height: 5,
-                    ),
-                    Divider(
-                      color: Colors.white.withOpacity(0.3),
-                    ),
-                    SizedBox(
-                      height: 5,
-                    ),
-                    profileOptions(context, 'Settings', CupertinoIcons.settings,
-                        true, MySettings(), Colors.white),
-                    profileOptions(context, 'Contact Us', CupertinoIcons.phone,
-                        true, MySettings(), Colors.white),
-                    profileOptions(context, 'Logout', Icons.logout, false,
-                        MySettings(), Colors.red),
-                  ],
+                Text(
+                  user!.email.toString(),
+                  style: TextStyle(
+                    fontSize: 14,
+                    fontWeight: FontWeight.w300,
+                  ),
                 ),
-              ),
-            ],
+                SizedBox(
+                  height: 15,
+                ),
+                GestureDetector(
+                  onTap: () {
+                    Navigator.push(context,
+                        MaterialPageRoute(builder: (context) => EditPage()));
+                  },
+                  child: Container(
+                    padding: EdgeInsets.fromLTRB(40, 10, 40, 10),
+                    decoration: BoxDecoration(
+                      color: Colors.black.withOpacity(1),
+                      borderRadius: BorderRadius.circular(30),
+                    ),
+                    child: Text(
+                      'Edit Profile',
+                      style: TextStyle(
+                        fontSize: 18,
+                        fontWeight: FontWeight.w400,
+                      ),
+                    ),
+                  ),
+                ),
+                SizedBox(
+                  height: 25,
+                ),
+                Padding(
+                  padding: const EdgeInsets.only(left: 18, right: 18),
+                  child: Column(
+                    children: [
+                      SizedBox(
+                        height: 5,
+                      ),
+                      Divider(
+                        color: Colors.white.withOpacity(0.3),
+                      ),
+                      SizedBox(
+                        height: 5,
+                      ),
+                      profileOptions(
+                          context,
+                          'Settings',
+                          CupertinoIcons.settings,
+                          true,
+                          MySettings(),
+                          Colors.white),
+                      profileOptions(
+                          context,
+                          'Contact Us',
+                          CupertinoIcons.phone,
+                          true,
+                          MySettings(),
+                          Colors.white),
+                      profileOptions(context, 'Logout', Icons.logout, false,
+                          MySettings(), Colors.red),
+                    ],
+                  ),
+                ),
+              ],
+            ),
           ),
           if (isloading) logoutLoading(),
         ]),
@@ -253,7 +267,7 @@ class _ProfileState extends State<Profile> {
     );
   }
 
-  Stack profileImage() {
+  Stack profileImage(String? photoURL) {
     return Stack(
       alignment: Alignment.center,
       children: [
@@ -299,7 +313,7 @@ class _ProfileState extends State<Profile> {
           decoration: BoxDecoration(
             boxShadow: [
               BoxShadow(
-                color: const Color.fromARGB(255, 0, 0, 0).withOpacity(0.4),
+                color: Color.fromARGB(255, 0, 0, 0).withOpacity(0.4),
                 spreadRadius: -5,
                 blurRadius: 25,
                 offset: Offset(10, 10),
@@ -307,9 +321,21 @@ class _ProfileState extends State<Profile> {
               ),
             ],
           ),
-          child: CircleAvatar(
-            radius: 60,
-            backgroundImage: AssetImage('assets/images/me.jpg'),
+          child: ClipRRect(
+            borderRadius: BorderRadius.circular(100),
+            child: photoURL != null && photoURL.startsWith('http')
+                ? Image.network(
+                    photoURL,
+                    height: 120,
+                    width: 120,
+                    fit: BoxFit.cover,
+                  )
+                : Image.asset(
+                    'assets/images/default_profile.png', // Provide a default image path
+                    height: 120,
+                    width: 120,
+                    fit: BoxFit.cover,
+                  ),
           ),
         ),
         Positioned(
