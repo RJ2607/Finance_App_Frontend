@@ -1,6 +1,6 @@
 // ignore_for_file: prefer_const_literals_to_create_immutables, prefer_const_constructors, sort_child_properties_last
 
-import 'package:finance_manager/Pages/AddExpenses.dart';
+import 'package:finance_manager/Pages/Transaction/AddExpenses.dart';
 import 'package:finance_manager/Pages/Transaction/Transaction.dart';
 import 'package:finance_manager/Pages/home_page.dart';
 import 'package:flutter/cupertino.dart';
