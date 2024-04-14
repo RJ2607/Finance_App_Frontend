@@ -2,8 +2,8 @@
 
 import 'dart:ui';
 
-import 'package:finance_manager/Pages/userlog/signin.dart';
-import 'package:finance_manager/Pages/userlog/signup_option.dart';
+import 'package:finance_manager/Pages/Auth/signin.dart';
+import 'package:finance_manager/Pages/Auth/signup_option.dart';
 import 'package:flutter/material.dart';
 import 'package:rive/rive.dart';
 
