@@ -1,7 +1,7 @@
 // ignore_for_file: prefer_const_constructors, prefer_const_literals_to_create_immutables, sort_child_properties_last
 
-import 'package:finance_manager/Pages/Auth/signin.dart';
-import 'package:finance_manager/Pages/Auth/signup.dart';
+import 'package:finance_manager/Views/Auth/signin.dart';
+import 'package:finance_manager/Views/Auth/signup.dart';
 import 'package:flutter/material.dart';
 import 'package:icons_plus/icons_plus.dart';
 

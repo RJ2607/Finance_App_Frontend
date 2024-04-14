@@ -2,8 +2,8 @@
 
 import 'dart:ui';
 
-import 'package:finance_manager/Pages/Transaction/Expenses_exten.dart';
-import 'package:finance_manager/Pages/Transaction/Income_exten.dart';
+import 'package:finance_manager/Views/Transaction/Expenses_exten.dart';
+import 'package:finance_manager/Views/Transaction/Income_exten.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 

@@ -1,5 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:finance_manager/Pages/Auth/getting_start.dart';
+import 'package:finance_manager/Views/Auth/getting_start.dart';
 import 'package:finance_manager/components/bottom_nav.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';

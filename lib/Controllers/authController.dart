@@ -1,7 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
-import '../Pages/Auth/signin.dart';
+import '../Views/Auth/signin.dart';
 import '../widgets/showSnackBar.dart';
 
 class AuthController {

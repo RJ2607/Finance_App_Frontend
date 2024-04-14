@@ -3,8 +3,8 @@
 import 'dart:developer';
 import 'dart:ui';
 
-import 'package:finance_manager/Pages/settings/Settings.dart';
-import 'package:finance_manager/Pages/settings/edit_profile.dart';
+import 'package:finance_manager/Views/settings/Settings.dart';
+import 'package:finance_manager/Views/settings/edit_profile.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';

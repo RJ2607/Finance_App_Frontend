@@ -1,7 +1,7 @@
 // ignore_for_file: prefer_const_constructors
 
 import 'package:finance_manager/Controllers/authController.dart';
-import 'package:finance_manager/Pages/Auth/signin.dart';
+import 'package:finance_manager/Views/Auth/signin.dart';
 import 'package:finance_manager/widgets/input_fields.dart';
 import 'package:flutter/material.dart';
 
