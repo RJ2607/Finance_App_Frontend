@@ -1,11 +1,17 @@
 // ignore_for_file: prefer_const_constructors
 
-import 'dart:io';
+import 'dart:developer';
+import 'dart:typed_data';
 import 'dart:ui';
 
+import 'package:finance_manager/utils.dart';
+import 'package:finance_manager/widgets/submit_button.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
+
+import '../../Controllers/profileController.dart';
 
 class EditPage extends StatefulWidget {
   const EditPage({super.key});
@@ -15,8 +21,21 @@ class EditPage extends StatefulWidget {
 }
 
 class _EditPageState extends State<EditPage> {
-  late File _image;
-  final imagePicker = ImagePicker();
+  TextEditingController nameController = TextEditingController();
+  TextEditingController phoneController = TextEditingController();
+  TextEditingController emailController = TextEditingController();
+  final user = FirebaseAuth.instance.currentUser;
+  bool isloading = false;
+  Uint8List? _image;
+  ProfileController _profileController = ProfileController();
+
+  void selectImage() async {
+    Uint8List img = await pickImage(ImageSource.gallery);
+
+    setState(() {
+      _image = img;
+    });
+  }
 
   Future popUp() async {
     // options for image picker by gallery or camera
@@ -72,6 +91,7 @@ class _EditPageState extends State<EditPage> {
                 child: Column(
                   children: [
                     textFields(
+                      nameController,
                       'Full Name',
                       CupertinoIcons.person,
                       TextInputType.name,
@@ -81,50 +101,15 @@ class _EditPageState extends State<EditPage> {
                     SizedBox(
                       height: 15,
                     ),
-                    textFields(
-                      'Email',
-                      CupertinoIcons.mail,
-                      TextInputType.emailAddress,
-                      false,
-                      Colors.white,
-                    ),
-                    SizedBox(
-                      height: 15,
-                    ),
-                    textFields(
-                      'Phone No',
-                      CupertinoIcons.phone,
-                      TextInputType.phone,
-                      false,
-                      Colors.white,
-                    ),
-                    SizedBox(
-                      height: 30,
-                    ),
-                    GestureDetector(
-                      onTap: () {},
-                      child: Container(
-                        width: double.maxFinite,
-                        padding: EdgeInsets.fromLTRB(40, 10, 40, 10),
-                        decoration: BoxDecoration(
-                          color: Colors.black.withOpacity(1),
-                          borderRadius: BorderRadius.circular(30),
-                          border: Border.all(
-                            color: Color.fromARGB(255, 64, 64, 64),
-                            width: 2,
-                          ),
-                        ),
-                        child: Center(
-                          child: Text(
-                            'Edit Profile',
-                            style: TextStyle(
-                              fontSize: 18,
-                              fontWeight: FontWeight.w400,
-                            ),
-                          ),
-                        ),
-                      ),
-                    ),
+                    SubmitButton(
+                        onPressed: () => handleUpdateProfile(),
+                        // onPressed: () {
+                        //   Navigator.pushNamed(context, '/home');
+                        // },
+                        title: 'Edit Profile',
+                        loading: isloading,
+                        color: Colors.black,
+                        textsize: 20)
                   ],
                 ),
               )
@@ -135,12 +120,71 @@ class _EditPageState extends State<EditPage> {
     );
   }
 
-  TextField textFields(String label, IconData icon, TextInputType type,
-      bool obsecure, Color color) {
+  void handleUpdateProfile() async {
+    setState(() {
+      isloading = true;
+    });
+
+    String? imageUrl;
+
+    if (_image != null) {
+      // Upload image to Firebase Storage
+      imageUrl = await _profileController.uploadImageToFirebaseStorage(_image!);
+      log('Image URL: $imageUrl');
+
+      if (imageUrl == null) {
+        setState(() {
+          isloading = false;
+        });
+        return showDialog(
+          context: context,
+          builder: (context) => AlertDialog(
+            title: Text('Error'),
+            content: Text('Failed to upload image.'),
+            actions: <Widget>[
+              TextButton(
+                onPressed: () => Navigator.pop(context),
+                child: Text('OK'),
+              ),
+            ],
+          ),
+        );
+      }
+    }
+
+    // Update user's profile with new data
+    await _profileController.updateProfileInFirebase(
+      imageUrl,
+      nameController.text,
+    );
+
+    setState(() {
+      isloading = false;
+    });
+
+    // Show success message
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: Text('Success'),
+        content: Text('Profile updated successfully.'),
+        actions: <Widget>[
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: Text('OK'),
+          ),
+        ],
+      ),
+    );
+  }
+
+  TextField textFields(TextEditingController controller, String label,
+      IconData icon, TextInputType type, bool obsecure, Color color) {
     return TextField(
       style: TextStyle(
         color: color,
       ),
+      controller: controller,
       keyboardType: type,
       obscureText: obsecure,
       decoration: InputDecoration(
@@ -160,18 +204,18 @@ class _EditPageState extends State<EditPage> {
     );
   }
 
-  Future getImage(value) async {
-    final pickedFile = await imagePicker.pickImage(source: value);
+  // Future getImage(value) async {
+  //   final pickedFile = await imagePicker.pickImage(source: value);
 
-    // options for image picker by gallery or camera
-    setState(() {
-      if (pickedFile != null) {
-        _image = File(pickedFile.path);
-      } else {
-        print('No image selected.');
-      }
-    });
-  }
+  //   // options for image picker by gallery or camera
+  //   setState(() {
+  //     if (pickedFile != null) {
+  //       _image = pickedFile;
+  //     } else {
+  //       print('No image selected.');
+  //     }
+  //   });
+  // }
 
   Row topBar(BuildContext context) {
     return Row(
@@ -254,29 +298,32 @@ class _EditPageState extends State<EditPage> {
               ),
             ],
           ),
-          child: CircleAvatar(
-            radius: 60,
-            backgroundImage: AssetImage('assets/images/me.jpg'),
-          ),
+          child: _image != null
+              ? CircleAvatar(
+                  radius: 60,
+                  backgroundImage: MemoryImage(_image!),
+                )
+              : CircleAvatar(
+                  radius: 60,
+                  backgroundColor: const Color.fromARGB(255, 27, 27, 27),
+                  backgroundImage: NetworkImage(
+                      'https://static.vecteezy.com/system/resources/previews/019/879/186/original/user-icon-on-transparent-background-free-png.png'),
+                ),
         ),
         Positioned(
             bottom: 25,
             right: 15,
-            child: GestureDetector(
-              onTap: () {
-                popUp().then((value) => getImage(value));
-              },
-              //create a pencil button to change profile image
-              child: Container(
-                padding: EdgeInsets.all(10),
-                decoration: BoxDecoration(
-                  color: const Color.fromARGB(255, 0, 0, 0).withOpacity(0.7),
-                  shape: BoxShape.circle,
-                ),
-                child: Icon(
-                  CupertinoIcons.camera,
-                  color: const Color.fromARGB(255, 255, 255, 255),
-                ),
+            child: Container(
+              padding: EdgeInsets.all(1),
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                color: Colors.black.withOpacity(0.7),
+              ),
+              child: IconButton(
+                onPressed: selectImage,
+                icon: Icon(CupertinoIcons.camera),
+                color: Colors.white,
+                iconSize: 25,
               ),
             )),
       ],
