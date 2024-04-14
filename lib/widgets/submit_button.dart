@@ -29,16 +29,16 @@ class SubmitButton extends StatelessWidget {
             loading ? null : onPressed();
           },
           style: TextButton.styleFrom(
-              shadowColor: loading ? Colors.black : Colors.redAccent,
+              shadowColor: loading ? Colors.black : color,
               elevation: 15,
               fixedSize: Size(340, 45),
               side: BorderSide(
                 width: 1,
                 color: loading
                     ? const Color.fromARGB(255, 65, 65, 65)
-                    : Colors.redAccent,
+                    : Color.fromARGB(255, 148, 148, 148),
               ),
-              backgroundColor: loading ? Colors.grey[800] : Colors.redAccent),
+              backgroundColor: loading ? Colors.grey[800] : color),
           child: loading
               ? SizedBox(
                   height: 25,
