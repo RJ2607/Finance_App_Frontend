@@ -37,12 +37,16 @@ dependencies:
   fl_chart: ^0.66.1
   rive: ^0.7.0
   image_picker: ^1.0.7
+  google_sign_in: ^5.2.1
 
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.
   cupertino_icons: ^1.0.2
+
   firebase_core: ^2.27.0
   firebase_auth: ^4.17.8
+  cloud_firestore: ^4.15.8
+  firebase_storage: ^11.6.9
 
 dev_dependencies:
   flutter_test:
@@ -76,6 +80,7 @@ flutter:
     - assets/images/vector.png
     - assets/images/google.png
     - assets/images/Team 7_.jpeg
+    - assets/images/default_profile.png
     - assets/images/me.jpg
     - assets/Backgrounds/Spline.png
     - assets/RiveAssets/shapes.riv
