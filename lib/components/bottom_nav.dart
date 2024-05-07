@@ -1,10 +1,11 @@
 // ignore_for_file: prefer_const_literals_to_create_immutables, prefer_const_constructors, sort_child_properties_last
 
-import 'package:finance_manager/Views/Transaction/AddExpenses.dart';
+import 'package:finance_manager/Views/Transaction/Add%20Transaction/AddTransaction.dart';
 import 'package:finance_manager/Views/Transaction/Transaction.dart';
 import 'package:finance_manager/Views/home_page.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:icons_plus/icons_plus.dart';
 
 class BottomNav extends StatefulWidget {
   BottomNav({
@@ -48,11 +49,11 @@ class _BottomNavState extends State<BottomNav> {
           showUnselectedLabels: false,
           items: <BottomNavigationBarItem>[
             BottomNavigationBarItem(
-              icon: Icon(CupertinoIcons.home),
+              icon: Icon(Iconsax.home_1_outline),
               label: 'Home',
             ),
             BottomNavigationBarItem(
-              icon: Icon(CupertinoIcons.graph_circle),
+              icon: Icon(Iconsax.transaction_minus_outline),
               label: 'Transaction',
             ),
           ],
@@ -83,8 +84,8 @@ class _BottomNavState extends State<BottomNav> {
           child: Icon(CupertinoIcons.add),
         ),
         onPressed: () {
-          Navigator.push(
-              context, MaterialPageRoute(builder: (context) => AddExpenses()));
+          Navigator.push(context,
+              MaterialPageRoute(builder: (context) => AddTransaction()));
         },
         shape: CircleBorder(),
         tooltip: 'Add Transaction',
