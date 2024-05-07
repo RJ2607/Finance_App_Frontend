@@ -26,8 +26,8 @@ class _signInState extends State<signIn> {
       isloading = true;
     });
 
-    await authController.login(
-        context, emailEditingController, passwordEditingController);
+    await authController.login(context, emailEditingController.text.trim(),
+        passwordEditingController.text.trim());
 
     setState(() {
       isloading = false;

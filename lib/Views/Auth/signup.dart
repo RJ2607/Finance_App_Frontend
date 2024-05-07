@@ -27,8 +27,8 @@ class _signUpState extends State<signUp> {
       isloading = true;
     });
 
-    await authController.createAccount(context, emailController,
-        passwordController, confirmPasswordController);
+    await authController.createAccount(context, emailController.text.trim(),
+        passwordController.text.trim(), confirmPasswordController.text.trim());
 
     setState(() {
       isloading = false;
@@ -88,7 +88,7 @@ class _signUpState extends State<signUp> {
                 height: 70,
               ),
               SubmitButton(
-                  onPressed: () => handleSignUp,
+                  onPressed: handleSignUp,
                   title: 'Sign Up',
                   loading: isloading,
                   color: Colors.redAccent,

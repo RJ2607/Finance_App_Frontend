@@ -4,7 +4,9 @@ import 'dart:developer';
 import 'dart:typed_data';
 import 'dart:ui';
 
+import 'package:finance_manager/Views/settings/Profile.dart';
 import 'package:finance_manager/utils.dart';
+import 'package:finance_manager/widgets/showSnackBar.dart';
 import 'package:finance_manager/widgets/submit_button.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
@@ -27,6 +29,7 @@ class _EditPageState extends State<EditPage> {
   final user = FirebaseAuth.instance.currentUser;
   bool isloading = false;
   Uint8List? _image;
+  String? imageUrl = FirebaseAuth.instance.currentUser!.photoURL.toString();
   ProfileController _profileController = ProfileController();
 
   void selectImage() async {
@@ -82,7 +85,7 @@ class _EditPageState extends State<EditPage> {
               SizedBox(
                 height: 10,
               ),
-              profileImage(),
+              profileImage(imageUrl!),
               SizedBox(
                 height: 35,
               ),
@@ -125,57 +128,41 @@ class _EditPageState extends State<EditPage> {
       isloading = true;
     });
 
-    String? imageUrl;
-
     if (_image != null) {
       // Upload image to Firebase Storage
-      imageUrl = await _profileController.uploadImageToFirebaseStorage(_image!);
+      String? pic =
+          await _profileController.uploadImageToFirebaseStorage(_image!);
+      setState(() {
+        imageUrl = pic;
+      });
       log('Image URL: $imageUrl');
 
       if (imageUrl == null) {
         setState(() {
           isloading = false;
         });
-        return showDialog(
-          context: context,
-          builder: (context) => AlertDialog(
-            title: Text('Error'),
-            content: Text('Failed to upload image.'),
-            actions: <Widget>[
-              TextButton(
-                onPressed: () => Navigator.pop(context),
-                child: Text('OK'),
-              ),
-            ],
-          ),
-        );
       }
     }
 
     // Update user's profile with new data
-    await _profileController.updateProfileInFirebase(
+    await _profileController
+        .updateProfileInFirebase(
       imageUrl,
       nameController.text,
-    );
-
+    )
+        .then((value) {
+      Navigator.push(
+          context, MaterialPageRoute(builder: (context) => Profile()));
+      showSnackBar(context, 'Profile Updated Successfully', Colors.green);
+    }).catchError((error) {
+      showSnackBar(context, 'Unexpected Error Occured', Colors.red);
+      log('Failed to update profile: $error');
+    });
     setState(() {
       isloading = false;
     });
 
     // Show success message
-    showDialog(
-      context: context,
-      builder: (context) => AlertDialog(
-        title: Text('Success'),
-        content: Text('Profile updated successfully.'),
-        actions: <Widget>[
-          TextButton(
-            onPressed: () => Navigator.pop(context),
-            child: Text('OK'),
-          ),
-        ],
-      ),
-    );
   }
 
   TextField textFields(TextEditingController controller, String label,
@@ -248,7 +235,7 @@ class _EditPageState extends State<EditPage> {
     );
   }
 
-  Stack profileImage() {
+  Stack profileImage(String photoURL) {
     return Stack(
       alignment: Alignment.center,
       children: [
@@ -298,17 +285,35 @@ class _EditPageState extends State<EditPage> {
               ),
             ],
           ),
-          child: _image != null
-              ? CircleAvatar(
-                  radius: 60,
-                  backgroundImage: MemoryImage(_image!),
-                )
-              : CircleAvatar(
-                  radius: 60,
-                  backgroundColor: const Color.fromARGB(255, 27, 27, 27),
-                  backgroundImage: NetworkImage(
-                      'https://static.vecteezy.com/system/resources/previews/019/879/186/original/user-icon-on-transparent-background-free-png.png'),
-                ),
+          child: ClipRRect(
+            borderRadius: BorderRadius.circular(100),
+            child: _image == null
+                ? Image.network(
+                    photoURL != null && photoURL!.startsWith('http')
+                        ? photoURL!
+                        : 'https://static.vecteezy.com/system/resources/previews/019/879/186/original/user-icon-on-transparent-background-free-png.png',
+                    height: 120,
+                    width: 120,
+                    fit: BoxFit.cover,
+                  )
+                : Image.memory(
+                    _image!, // Provide a default image path
+                    height: 120,
+                    width: 120,
+                    fit: BoxFit.cover,
+                  ),
+          ),
+          // _image != null
+          //     ? CircleAvatar(
+          //         radius: 60,
+          //         backgroundImage: MemoryImage(_image!),
+          //       )
+          //     : CircleAvatar(
+          //         radius: 60,
+          //         backgroundColor: const Color.fromARGB(255, 27, 27, 27),
+          //         backgroundImage: NetworkImage(
+          //             'https://static.vecteezy.com/system/resources/previews/019/879/186/original/user-icon-on-transparent-background-free-png.png'),
+          //       ),
         ),
         Positioned(
             bottom: 25,
