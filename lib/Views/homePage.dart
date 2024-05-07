@@ -70,7 +70,7 @@ class _HomePageState extends State<HomePage> {
           flexibleSpace: FutureBuilder(
               future: _transactionController.getTotalBalance(),
               builder: (BuildContext context, AsyncSnapshot snapshot) {
-                if (snapshot.connectionState == ConnectionState.waiting) {
+                if (snapshot.hasData == false) {
                   return Shimmer(
                     child: Container(
                       width: double.maxFinite,
@@ -141,7 +141,7 @@ class _HomePageState extends State<HomePage> {
               return FutureBuilder(
                 future: _transactionController.getAllTransactions(),
                 builder: (BuildContext context, AsyncSnapshot snapshot) {
-                  if (snapshot.connectionState == ConnectionState.waiting) {
+                  if (snapshot.hasData == false) {
                     return Shimmer(
                         period: Duration(seconds: 1),
                         child: Container(

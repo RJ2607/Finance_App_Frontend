@@ -2,7 +2,9 @@
 
 import 'package:finance_manager/Views/Transaction/Add%20Transaction/AddTransaction.dart';
 import 'package:finance_manager/Views/Transaction/Transaction.dart';
-import 'package:finance_manager/Views/home_page.dart';
+import 'package:finance_manager/Views/chatPage.dart';
+import 'package:finance_manager/Views/homePage.dart';
+import 'package:finance_manager/Views/newsPage.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:icons_plus/icons_plus.dart';
@@ -22,7 +24,9 @@ class _BottomNavState extends State<BottomNav> {
   // int val = 0;
   static const List<Widget> _widgetOptions = <Widget>[
     HomePage(),
-    Transaction()
+    Transaction(),
+    News(),
+    Chat(),
   ];
 
   void _onItemTapped(int index) {
@@ -41,7 +45,11 @@ class _BottomNavState extends State<BottomNav> {
           topRight: Radius.circular(20),
         ),
         child: BottomNavigationBar(
+          // selectedItemColor: Colors.blue,
+          selectedIconTheme: IconThemeData(color: Colors.deepPurpleAccent),
+          unselectedIconTheme: IconThemeData(color: Colors.white),
           onTap: _onItemTapped,
+          currentIndex: widget.tab,
           type: BottomNavigationBarType.fixed,
           backgroundColor: Colors.black,
           // selectedItemColor: Colors.deepPurpleAccent,
@@ -49,20 +57,29 @@ class _BottomNavState extends State<BottomNav> {
           showUnselectedLabels: false,
           items: <BottomNavigationBarItem>[
             BottomNavigationBarItem(
-              icon: Icon(Iconsax.home_1_outline),
+              icon: Icon(Iconsax.home_1_bold),
               label: 'Home',
             ),
             BottomNavigationBarItem(
-              icon: Icon(Iconsax.transaction_minus_outline),
+              icon: Icon(AntDesign.transaction_outline),
               label: 'Transaction',
+            ),
+            BottomNavigationBarItem(
+              icon: Icon(Bootstrap.newspaper),
+              label: 'News',
+            ),
+            BottomNavigationBarItem(
+              icon: Icon(Bootstrap.chat_fill),
+              label: 'Chat',
             ),
           ],
         ),
       ),
       floatingActionButton: FloatingActionButton(
+        backgroundColor: Colors.black,
         child: Container(
-          width: 60,
-          height: 60,
+          width: 50,
+          height: 50,
           decoration: BoxDecoration(
             boxShadow: [
               BoxShadow(
@@ -78,7 +95,7 @@ class _BottomNavState extends State<BottomNav> {
                 Colors.blue,
                 Colors.purple,
               ],
-              transform: GradientRotation(0.5),
+              transform: GradientRotation(0.1),
             ),
           ),
           child: Icon(CupertinoIcons.add),
