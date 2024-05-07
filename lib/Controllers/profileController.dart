@@ -5,6 +5,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart' as firebase_storage;
 
 class ProfileController {
+  late String fileName;
   final user = FirebaseAuth.instance.currentUser;
 
   getProfile() async {
@@ -14,7 +15,8 @@ class ProfileController {
   Future<String?> uploadImageToFirebaseStorage(Uint8List imageBytes) async {
     try {
       // Generate a unique filename
-      String fileName = '${DateTime.now().millisecondsSinceEpoch}.jpg';
+      fileName = '${user!.displayName}profileImage.jpg';
+
       log('Uploading image: $fileName');
 
       // Upload image to Firebase Storage
@@ -22,6 +24,7 @@ class ProfileController {
           .ref()
           .child('profile_images')
           .child(fileName);
+      // await ref.delete();
       await ref.putData(imageBytes);
 
       // Get download URL of the uploaded image
@@ -39,7 +42,10 @@ class ProfileController {
   Future<void> updateProfileInFirebase(String? imageUrl, String newName) async {
     try {
       // Update user's profile with new data
-      await user!.updateDisplayName(newName);
+      if (newName != '') {
+        await user!.updateDisplayName(newName);
+      }
+
       if (imageUrl != null) {
         await user!.updatePhotoURL(imageUrl);
       }
