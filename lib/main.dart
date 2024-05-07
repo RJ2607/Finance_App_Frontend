@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:finance_manager/Views/Auth/getting_start.dart';
 import 'package:finance_manager/components/bottom_nav.dart';
+import 'package:finance_manager/test.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
@@ -35,12 +36,14 @@ class _MyAppState extends State<MyApp> {
       theme: ThemeData(fontFamily: 'Raleway', brightness: Brightness.dark),
       initialRoute: (FirebaseAuth.instance.currentUser == null)
           ? '/gettingStart'
+          // : '/test',
           : '/home',
       routes: {
         '/gettingStart': (context) => const GettingStart(),
         '/home': (context) => BottomNav(
               tab: 0,
             ),
+        '/test': (context) => MyTest()
       },
     );
   }
