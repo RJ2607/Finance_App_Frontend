@@ -3,6 +3,7 @@
 import 'dart:developer';
 import 'dart:ui';
 
+import 'package:finance_manager/Controllers/authController.dart';
 import 'package:finance_manager/Views/settings/Settings.dart';
 import 'package:finance_manager/Views/settings/edit_profile.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -25,7 +26,43 @@ class _ProfileState extends State<Profile> {
       setState(() {
         isloading = true;
       });
-      await FirebaseAuth.instance.signOut();
+      await FirebaseAuth.instance.signOut().then((value) => {
+            Navigator.popUntil(context, (route) => route.isFirst),
+            Navigator.pushReplacementNamed(context, '/gettingStart')
+          });
+    } on FirebaseAuthException catch (e) {
+      log(e.code.toString());
+    } finally {
+      setState(() {
+        isloading = false;
+      });
+    }
+  }
+
+  void deleteAccount() async {
+    try {
+      setState(() {
+        isloading = true;
+      });
+      showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            title: Text('Are you sure you want to delete?'),
+            content: SingleChildScrollView(
+                child: TextButton(
+              child: isloading
+                  ? CircularProgressIndicator(
+                      color: Colors.black,
+                      strokeWidth: 2,
+                      strokeCap: StrokeCap.round,
+                    )
+                  : Text('Sure'),
+              onPressed: () => AuthController().delete(context),
+            )),
+          );
+        },
+      );
     } on FirebaseAuthException catch (e) {
       log(e.code.toString());
     } finally {
@@ -50,7 +87,8 @@ class _ProfileState extends State<Profile> {
                 SizedBox(
                   height: 10,
                 ),
-                profileImage(user!.photoURL.toString()),
+                ProfileImage(
+                    context: context, photoURL: user!.photoURL.toString()),
                 SizedBox(
                   height: 5,
                 ),
@@ -123,6 +161,15 @@ class _ProfileState extends State<Profile> {
                           Colors.white),
                       profileOptions(context, 'Logout', Icons.logout, false,
                           MySettings(), Colors.red),
+                      Text(
+                        'DANGER ZONE',
+                        style: TextStyle(color: Colors.red),
+                      ),
+                      Divider(
+                        color: Colors.red.withOpacity(0.3),
+                      ),
+                      profileOptions(context, 'Delete Account',
+                          CupertinoIcons.trash, false, MySettings(), Colors.red)
                     ],
                   ),
                 ),
@@ -168,8 +215,8 @@ class _ProfileState extends State<Profile> {
           onTap: () {
             if (title == 'Logout') {
               logout();
-              Navigator.popUntil(context, (route) => route.isFirst);
-              Navigator.pushReplacementNamed(context, '/gettingStart');
+            } else if (title == 'Delete Account') {
+              deleteAccount();
             } else {
               Navigator.push(
                 context,
@@ -247,7 +294,7 @@ class _ProfileState extends State<Profile> {
             )),
         GestureDetector(
           onTap: () {
-            Navigator.pop(context);
+            Navigator.pushNamed(context, '/home');
           },
           child: Container(
               padding: EdgeInsets.fromLTRB(18, 5, 18, 5),
@@ -266,8 +313,20 @@ class _ProfileState extends State<Profile> {
       ],
     );
   }
+}
 
-  Stack profileImage(String? photoURL) {
+class ProfileImage extends StatelessWidget {
+  const ProfileImage({
+    super.key,
+    required this.context,
+    required this.photoURL,
+  });
+
+  final BuildContext context;
+  final String? photoURL;
+
+  @override
+  Widget build(BuildContext context) {
     return Stack(
       alignment: Alignment.center,
       children: [
@@ -323,9 +382,9 @@ class _ProfileState extends State<Profile> {
           ),
           child: ClipRRect(
             borderRadius: BorderRadius.circular(100),
-            child: photoURL != null && photoURL.startsWith('http')
+            child: photoURL != null && photoURL!.startsWith('http')
                 ? Image.network(
-                    photoURL,
+                    photoURL!,
                     height: 120,
                     width: 120,
                     fit: BoxFit.cover,
@@ -341,22 +400,20 @@ class _ProfileState extends State<Profile> {
         Positioned(
             bottom: 25,
             right: 15,
-            child: GestureDetector(
-              onTap: () {
-                Navigator.push(context,
-                    MaterialPageRoute(builder: (context) => EditPage()));
-              },
-              //create a pencil button to change profile image
-              child: Container(
-                padding: EdgeInsets.all(10),
-                decoration: BoxDecoration(
-                  color: const Color.fromARGB(255, 0, 0, 0).withOpacity(0.7),
-                  shape: BoxShape.circle,
-                ),
-                child: Icon(
-                  CupertinoIcons.pencil,
-                  color: const Color.fromARGB(255, 255, 255, 255),
-                ),
+            child: Container(
+              padding: EdgeInsets.all(1),
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                color: Colors.black.withOpacity(0.7),
+              ),
+              child: IconButton(
+                onPressed: () {
+                  Navigator.push(context,
+                      MaterialPageRoute(builder: (context) => EditPage()));
+                },
+                icon: Icon(CupertinoIcons.pencil),
+                color: Colors.white,
+                iconSize: 25,
               ),
             )),
       ],
